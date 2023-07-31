@@ -1,7 +1,6 @@
 import subprocess
 import threading
 import json
-import time
 
 
 class ReadPipe(threading.Thread):
@@ -22,12 +21,12 @@ LEN_HEADER = "Content-Length: "
 TYPE_HEADER = "Content-Type: "
 
 
-class MyEncoder(json.JSONEncoder): 
+class MyEncoder(json.JSONEncoder):
     """
     Encodes an object in JSON
     """
     def default(self, o): # pylint: disable=E0202
-        return o.__dict__ 
+        return o.__dict__
 
 
 class JsonRpcEndpoint(object):
@@ -45,7 +44,7 @@ class JsonRpcEndpoint(object):
     def __add_header(json_string):
         '''
         Adds a header for the given json string
-        
+
         :param str json_string: The string
         :return: the string with the header
         '''
@@ -56,7 +55,7 @@ class JsonRpcEndpoint(object):
         '''
         Sends the given message.
 
-        :param dict message: The message to send.            
+        :param dict message: The message to send.
         '''
         json_string = json.dumps(message, cls=MyEncoder)
         jsonrpc_req = self.__add_header(json_string)
@@ -66,7 +65,7 @@ class JsonRpcEndpoint(object):
 
 
     def recv_response(self):
-        '''        
+        '''
         Recives a message.
 
         :return: a message
@@ -171,7 +170,7 @@ class MyEndpoint(threading.Thread):
                 error = jsonrpc_message.get("error")
                 rpc_id = jsonrpc_message.get("id")
                 params = jsonrpc_message.get("params")
-                
+
                 # print(jsonrpc_message, end='\n\n')
 
                 self.handle_result(rpc_id, result, error)
@@ -195,7 +194,7 @@ if __name__ == "__main__":
     read_pipe.start()
 
     json_rpc_endpoint = JsonRpcEndpoint(p.stdin, p.stdout)
-    
+
     endpoint = MyEndpoint(json_rpc_endpoint)
     endpoint.start()
 
@@ -220,9 +219,9 @@ class RedisHelper:
                 "character": 12  # 从 0 开始算
             }
         })
-    
+
     print(f"1. result: {result}")
-    
+
     # 这种语法不完整预期是返回语法错误: (module(ERROR))
     result = endpoint.call_method("ParseAstInRange", {
             "language": "python",
@@ -234,7 +233,7 @@ def
                 "character": 4  # 从 0 开始算
             }
         })
-    
+
     print(f"2. result: {result}")
 
     result = endpoint.call_method("ParseAstInRange", {
@@ -250,7 +249,7 @@ const isOdd = useCallback(function isOdd(n) {
                 "character": 4  # 从 0 开始算
             }
         })
-    
+
     print(f"3. result: {result}")
 
     # time.sleep(1)
